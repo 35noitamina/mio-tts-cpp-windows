@@ -24,39 +24,39 @@ struct mio_tts_params {
     enum llama_flash_attn_type miocodec_flash_attn_type;
 };
 
-LLAMA_API struct mio_tts_params mio_tts_default_params(void);
+struct mio_tts_params mio_tts_default_params(void);
 
-LLAMA_API struct mio_tts_context * mio_tts_init_from_file(
+struct mio_tts_context * mio_tts_init_from_file(
         const char * model_vocoder,
         const char * wavlm_model,
         char * err,
         size_t err_size);
 
 // Create a new context that shares read-only model weights with `ctx`.
-LLAMA_API struct mio_tts_context * mio_tts_context_clone(
+struct mio_tts_context * mio_tts_context_clone(
         const struct mio_tts_context * ctx,
         char * err,
         size_t err_size);
 
-LLAMA_API void mio_tts_free(struct mio_tts_context * ctx);
+void mio_tts_free(struct mio_tts_context * ctx);
 
-LLAMA_API bool mio_tts_context_is_dynamic_global(const struct mio_tts_context * ctx);
-LLAMA_API int32_t mio_tts_context_sample_rate(const struct mio_tts_context * ctx);
-LLAMA_API int32_t mio_tts_context_samples_per_token(const struct mio_tts_context * ctx);
-LLAMA_API bool mio_tts_context_set_backend_device(
+bool mio_tts_context_is_dynamic_global(const struct mio_tts_context * ctx);
+int32_t mio_tts_context_sample_rate(const struct mio_tts_context * ctx);
+int32_t mio_tts_context_samples_per_token(const struct mio_tts_context * ctx);
+bool mio_tts_context_set_backend_device(
         struct mio_tts_context * ctx,
         const char * backend_name,
         char * err,
         size_t err_size);
 
-LLAMA_API struct mio_tts_vocab_map * mio_tts_vocab_map_init(
+struct mio_tts_vocab_map * mio_tts_vocab_map_init(
         const struct llama_vocab * vocab,
         char * err,
         size_t err_size);
 
-LLAMA_API void mio_tts_vocab_map_free(struct mio_tts_vocab_map * map);
+void mio_tts_vocab_map_free(struct mio_tts_vocab_map * map);
 
-LLAMA_API bool mio_tts_tokens_to_codes(
+bool mio_tts_tokens_to_codes(
         const struct mio_tts_vocab_map * map,
         const llama_token * tokens,
         size_t n_tokens,
@@ -68,28 +68,28 @@ LLAMA_API bool mio_tts_tokens_to_codes(
 // Try to convert a single LLM token to a MioCodec audio code.
 // Returns true and sets *code_out if the token maps to a code.
 // Returns false (no error) if the token is not an audio code (e.g. text token).
-LLAMA_API bool mio_tts_token_to_code(
+bool mio_tts_token_to_code(
         const struct mio_tts_vocab_map * map,
         llama_token token,
         int32_t * code_out);
 
-LLAMA_API bool mio_tts_codes_load(
+bool mio_tts_codes_load(
         const char * path,
         int32_t ** codes_out,
         size_t * n_codes_out,
         char * err,
         size_t err_size);
 
-LLAMA_API bool mio_tts_codes_save(
+bool mio_tts_codes_save(
         const char * path,
         const int32_t * codes,
         size_t n_codes,
         char * err,
         size_t err_size);
 
-LLAMA_API void mio_tts_codes_free(int32_t * codes);
+void mio_tts_codes_free(int32_t * codes);
 
-LLAMA_API bool mio_tts_reference_to_embedding(
+bool mio_tts_reference_to_embedding(
         struct mio_tts_context * ctx,
         const char * reference_audio,
         struct mio_tts_params params,
@@ -98,23 +98,23 @@ LLAMA_API bool mio_tts_reference_to_embedding(
         char * err,
         size_t err_size);
 
-LLAMA_API bool mio_tts_embedding_load_gguf(
+bool mio_tts_embedding_load_gguf(
         const char * path,
         float ** embedding_out,
         size_t * n_embedding_out,
         char * err,
         size_t err_size);
 
-LLAMA_API bool mio_tts_embedding_save_gguf(
+bool mio_tts_embedding_save_gguf(
         const char * path,
         const float * embedding,
         size_t n_embedding,
         char * err,
         size_t err_size);
 
-LLAMA_API void mio_tts_embedding_free(float * embedding);
+void mio_tts_embedding_free(float * embedding);
 
-LLAMA_API bool mio_tts_synthesize(
+bool mio_tts_synthesize(
         struct mio_tts_context * ctx,
         const int32_t * codes,
         size_t n_codes,
@@ -128,14 +128,14 @@ LLAMA_API bool mio_tts_synthesize(
         size_t err_size);
 
 // Reserve MioCodec decode workspace for up to `n_codes` code tokens.
-LLAMA_API bool mio_tts_reserve_workspace(
+bool mio_tts_reserve_workspace(
         struct mio_tts_context * ctx,
         int32_t n_codes,
         char * err,
         size_t err_size);
 
 // Estimate MioCodec decode workspace size in bytes for up to `n_codes`.
-LLAMA_API bool mio_tts_estimate_workspace_bytes(
+bool mio_tts_estimate_workspace_bytes(
         struct mio_tts_context * ctx,
         int32_t n_codes,
         uint64_t * out_bytes,
@@ -143,21 +143,21 @@ LLAMA_API bool mio_tts_estimate_workspace_bytes(
         size_t err_size);
 
 // Reserve WavLM + global-embedding workspaces for reference generation.
-LLAMA_API bool mio_tts_reserve_reference_workspace(
+bool mio_tts_reserve_reference_workspace(
         struct mio_tts_context * ctx,
         float max_reference_seconds,
         char * err,
         size_t err_size);
 
 // Estimate WavLM + global-embedding workspace size in bytes for reference generation.
-LLAMA_API bool mio_tts_estimate_reference_workspace_bytes(
+bool mio_tts_estimate_reference_workspace_bytes(
         struct mio_tts_context * ctx,
         float max_reference_seconds,
         uint64_t * out_bytes,
         char * err,
         size_t err_size);
 
-LLAMA_API bool mio_tts_audio_save_wav16(
+bool mio_tts_audio_save_wav16(
         const char * path,
         const float * audio,
         size_t n_audio,
@@ -165,7 +165,7 @@ LLAMA_API bool mio_tts_audio_save_wav16(
         char * err,
         size_t err_size);
 
-LLAMA_API void mio_tts_audio_free(float * audio);
+void mio_tts_audio_free(float * audio);
 
 #ifdef __cplusplus
 }

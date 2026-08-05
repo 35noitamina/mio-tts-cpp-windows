@@ -26,6 +26,14 @@
 #include <utility>
 #include <vector>
 
+#ifdef _WIN32
+#include <stdlib.h>
+inline int setenv(const char *name, const char *value, int overwrite) {
+  if (!overwrite && getenv(name) != nullptr) return 0;
+  return _putenv_s(name, value);
+}
+#endif
+
 using json = nlohmann::ordered_json;
 
 enum llm_api_mode {
